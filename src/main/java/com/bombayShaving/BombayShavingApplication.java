@@ -8,6 +8,7 @@ public class BombayShavingApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(BombayShavingApplication.class, args);
+		System.out.println("Started");
 	}
 
 }
