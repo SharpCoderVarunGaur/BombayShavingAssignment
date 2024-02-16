@@ -26,7 +26,6 @@ public class ApiResponse {
 	}
 	public ApiResponse() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 }

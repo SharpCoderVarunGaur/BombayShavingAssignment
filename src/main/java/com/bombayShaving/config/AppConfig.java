@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,6 +25,8 @@ import com.bombayShaving.security.JwtFilter;
 
 
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AppConfig {
 	@Autowired
 	private  JwtFilter jwtFilter;
@@ -54,14 +57,14 @@ public class AppConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.
-		csrf(csrf->csrf.disable()).cors(c->c.disable()).authorizeHttpRequests(auth->auth.requestMatchers("api/auth/login").permitAll().requestMatchers("/Sign-up/**").permitAll().requestMatchers("Role/**").permitAll().anyRequest().authenticated())
+		csrf(csrf->csrf.disable()).cors(c->c.disable()).authorizeHttpRequests(auth->auth.requestMatchers("api/auth/login").permitAll().requestMatchers("Sign-up/**").permitAll().requestMatchers("api/employees/role/**").permitAll().anyRequest().authenticated())
 		.sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		
 		.exceptionHandling(e->e.authenticationEntryPoint(entrypoint))
 		;
 		
 		http.addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class);
-//		http.authenticationProvider(authenticationProvider());
-	      DefaultSecurityFilterChain chain = http.build();
+	    DefaultSecurityFilterChain chain = http.build();
 	      return chain;
 	}
 

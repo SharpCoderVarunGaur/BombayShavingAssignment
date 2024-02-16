@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,11 +50,12 @@ public class EmployeeController {
 		return new ResponseEntity<Employee>(e,HttpStatus.CREATED);
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping
 	public ResponseEntity<List<Employee>> getAllEmployee(){
+		System.out.println("Hello admin");
 		List<Employee> e=this.employeeServiceImp.getAllEmployee();
 		return ResponseEntity.ok(e);
-		
 	}
 	
 	@PostMapping("role")
@@ -61,6 +63,7 @@ public class EmployeeController {
 		Role r=this.roleServiceImp.createRole(role);
 		return ResponseEntity.status(HttpStatus.CREATED).body(r);
 	}
+	
 	
 	@GetMapping("role/all")
 	public ResponseEntity<List<Role>> getAllRole(){
