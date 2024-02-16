@@ -21,13 +21,11 @@ public class UserDetailService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		System.out.println("Hello12012904");
 		Login login=this.loginRepo.findByUserName(username);
 		
 		if(login==null) {
-			System.out.println("Hello12012905");
+			
 		}
-		System.out.println("Hello12012906");
 		CustomUserDetail c=new CustomUserDetail(login);
 		System.out.println("Hello12012907");
 		return c;

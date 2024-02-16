@@ -35,7 +35,7 @@ public class Login {
 	
 	private String password;
 	
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private  List<Role> role=new ArrayList<Role>();
 	public int getId() {
 		return id;

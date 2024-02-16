@@ -6,5 +6,5 @@ import com.bombayShaving.entites.Employee;
 
 public interface EmployeeRepo extends JpaRepository<Employee,Integer>{
    
-	Employee findByName(String name);
+	Employee findByEmail(String email);
 }

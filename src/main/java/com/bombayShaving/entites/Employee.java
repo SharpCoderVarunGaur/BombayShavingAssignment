@@ -1,5 +1,6 @@
 package com.bombayShaving.entites;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class Employee {
     private String name;
     @Email(message = "Email should be valid in @/.com")
     private String email; 
-    private Date  created_at;
+    private LocalDateTime  created_at;
 	public int getId() {
 		return id;
 	}
@@ -43,15 +44,15 @@ public class Employee {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public Date getCreated_at() {
+	public LocalDateTime getCreated_at() {
 		return created_at;
 	}
-	public void setCreated_at(Date created_at) {
-		this.created_at = created_at;
+	public void setCreated_at(LocalDateTime localTime) {
+		this.created_at = localTime;
 	}
 	
 	public Employee(int id, String name, @Email(message = "Email should be valid in @/.com") String email,
-			Date created_at) {
+			LocalDateTime created_at) {
 		super();
 		this.id = id;
 		this.name = name;

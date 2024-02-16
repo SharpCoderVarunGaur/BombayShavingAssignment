@@ -1,5 +1,6 @@
 package com.bombayShaving.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bombayShaving.entites.Login;
 import com.bombayShaving.entites.Role;
 import com.bombayShaving.exception.ApiResponse;
+import com.bombayShaving.exception.ResourceNotFoundException;
 import com.bombayShaving.repositroy.LoginRepo;
 import com.bombayShaving.repositroy.RoleRepo;
 import com.bombayShaving.serviceImp.LoginServiceImpl;
@@ -43,30 +45,43 @@ public class LoginController {
 	@Autowired
 	private LoginRepo loginRepo;
 	
+	@Autowired
+	private Login login3;
 	
 	@PostMapping
 	public ResponseEntity<?> createLogin(@RequestBody Login login){
-		Login login2=this.loginRepo.findByUserName(login.getUserName());
-		System.out.println("Hello123" +login.getRole().isEmpty() );
-		if(login2!=null) {
-			return new ResponseEntity<ApiResponse>(new ApiResponse("UserName is already Exist",false),HttpStatus.BAD_REQUEST);
+		if(login.getUserName()!=null) {
+			login3=this.loginRepo.findByUserName(login.getUserName());
+			if(login3!=null) {
+				return new ResponseEntity<ApiResponse>(new ApiResponse("UserName is already Exist",false),HttpStatus.BAD_REQUEST);
+			}
 		}
-		if( login.getRole().isEmpty() || login.getPassword()==null||login.getUserName()==null) {
+       
+		if(login.getPassword()==null||login.getUserName()==null) {
 			return new ResponseEntity<ApiResponse>(new ApiResponse("Please enter"+ (login.getRole().isEmpty() ?" roleId": login.getPassword() ==null ? " password":login.getUserName()==null ? " userName":"") +" in payload",false),HttpStatus.BAD_REQUEST);
 		}
-		System.out.println("Hello123" + login.getUserName());
-		System.out.println("pas"+login.getPassword());
-		String password=this.encoder.encode(login.getPassword());
-		System.out.println("pas"+password);
 		
-        List<Role> l1=login.getRole().stream().map(e-> {
-		System.out.println("Hello1243" + e.getId());
-			Optional<Role> r = this.repo.findById(e.getId());	
-			Role r1 = r.get();
-			return r1;
-			        	
-		}).collect(Collectors.toList());
-        System.out.println("Hello1243" + l1);
+		
+		String password=this.encoder.encode(login.getPassword());
+		List<Role> l1=new ArrayList<Role>();
+		if(login.getRole().isEmpty()) {
+			Optional<Role> r = this.repo.findById(3);
+		     l1.add(r.get());
+		}else {
+			 l1=login.getRole().stream().map(e-> {
+					
+					Optional<Role> r = this.repo.findById(e.getId());	
+					if(r.isEmpty()) {
+						throw new ResourceNotFoundException("Role is not found","roleID",e.getId());
+					}
+					
+					Role r1 = r.get();
+					return r1;
+					        	
+				}).collect(Collectors.toList());		
+		}
+	     
+   
         login.setRole(l1);
 		login.setPassword(password);
 		Login l=this.impl.createLogin(login);
@@ -75,11 +90,11 @@ public class LoginController {
 	}
 	
 	
-//	@GetMapping("/get")
-//	public ResponseEntity<List<Login>> getAllLogin(){
-//		List<Login> l=this.impl.getLogin();
-//	return ResponseEntity.ok(l);
-//	}
-//	
+	@GetMapping("/get")
+	public ResponseEntity<List<Login>> getAllLogin(){
+		List<Login> l=this.impl.getLogin();
+	return ResponseEntity.ok(l);
+	}
+	
 	
 }
